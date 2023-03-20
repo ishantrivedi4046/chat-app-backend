@@ -28,7 +28,8 @@ import { ValidatorConfig } from "@ioc:Adonis/Core/Validator";
 export const appKey: string = Env.get("APP_KEY");
 
 export const jwtTokenExpiry = Env.get("JWT_TOKEN_EXPIRY");
-
+export const sendgridApiKey = Env.get("SENDGRID_API_KEY");
+export const sendgridUserEmail = Env.get("SENDGRID_USER_EMAIL");
 /*
 |--------------------------------------------------------------------------
 | Http server configuration
