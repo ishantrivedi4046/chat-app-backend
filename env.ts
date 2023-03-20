@@ -28,4 +28,7 @@ export default Env.rules({
   PG_PASSWORD: Env.schema.string.optional(),
   PG_DB_NAME: Env.schema.string(),
   JWT_TOKEN_EXPIRY: Env.schema.string(),
+  SENDGRID_API_KEY: Env.schema.string(),
+  SENDGRID_USER_EMAIL: Env.schema.string(),
+  BASE_URL: Env.schema.string(),
 });

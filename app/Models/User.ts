@@ -18,6 +18,18 @@ export default class User extends BaseModel {
   @column({ serializeAs: null })
   public password?: string;
 
+  @column()
+  public phone?: string;
+
+  @column()
+  public is_verified: boolean;
+
+  @column()
+  public profile_image_url?: string;
+
+  @column()
+  public user_name: string;
+
   @computed()
   public get fullName() {
     return `${this.first_name} ${this.last_name ? this.last_name : ""}`;
