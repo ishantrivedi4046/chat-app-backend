@@ -7,3 +7,6 @@ yarn.lock
 .husky/*
 .gitignore
 .prettierignore
+Dockerfile
+docker-compose.yaml
+pg_hba.conf

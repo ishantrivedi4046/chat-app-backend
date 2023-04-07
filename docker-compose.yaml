@@ -1,0 +1,41 @@
+version: "3"
+
+networks:
+  my-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    env_file:
+      - .env.production
+    ports:
+      - "3333:3333"
+    restart: always
+    networks:
+      my-network:
+        ipv4_address: 192.168.0.3
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    env_file:
+      - .env.db.production
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./pg_hba.conf:/etc/postgresql/pg_hba.conf:ro
+    restart: always
+    networks:
+      my-network:
+        ipv4_address: 192.168.0.2
+
+volumes:
+  db-data:
