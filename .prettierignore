@@ -10,3 +10,4 @@ yarn.lock
 Dockerfile
 docker-compose.yaml
 pg_hba.conf
+scripts/*

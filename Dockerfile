@@ -18,6 +18,3 @@ RUN yarn build
 
 # Expose port 3333 for the Adonis server
 EXPOSE 3333
-
-# Start the server
-CMD ["yarn", "start"]

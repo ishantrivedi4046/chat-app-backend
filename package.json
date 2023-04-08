@@ -10,7 +10,9 @@
     "format": "prettier --write .",
     "prepare": "husky install",
     "install:clean": "rm -rf node_modules && yarn",
-    "copy-env": "cp .env build/.env"
+    "copy-env": "cp .env build/.env",
+    "migrate": "node ace migration:run --force",
+    "migrate:start": "yarn migrate && yarn start"
   },
   "eslintIgnore": [
     "build"
