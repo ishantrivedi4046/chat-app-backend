@@ -35,7 +35,7 @@ class InvitationService {
     const newInvitation: Invitation = await this.createInvitation({ host_id: host.id });
     const invitationLink = this.generateInvitaionLink(newInvitation.id);
     forEach(invitedUserEmails, async (email) => {
-      /** entering invited users in the table */
+      /** entering unique invited users in the table */
       const invitedUser = await invitedUserService.createInvitedUser({ email });
       if (invitedUser) {
         await newInvitation.related("invitedUsers").save(invitedUser);

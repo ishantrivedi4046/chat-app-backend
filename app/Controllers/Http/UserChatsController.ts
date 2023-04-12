@@ -2,15 +2,19 @@ import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import BadrequestException from "App/Exceptions/BadrequestException";
 import InternalServerException from "App/Exceptions/InternalServerException";
 import Invitation from "App/Models/Invitation";
+import Message from "App/Models/Message";
 import { invitationService } from "App/Services/InvitationService";
 import { invitedUserService } from "App/Services/InvitedUserService";
 import { loggerService } from "App/Services/LoggerService";
+import { messageService } from "App/Services/MessageService";
 import { InvitationTransformer } from "App/Transformers/Invitation/InvitationTransformer";
+import { MessageTransformer } from "App/Transformers/Message/MessageTransformer";
 import { Helpers } from "App/Utils/helpers.util";
 import InviteValidator from "App/Validators/InviteValidator";
+import MessageValidator from "App/Validators/MessageValidator";
 
 export default class UserChatsController {
-  public async sendInvite({ request }: HttpContextContract) {
+  public async sendInvite({ request }: HttpContextContract): Promise<void> {
     const { invited_user_emails } = await request.validate(InviteValidator);
     const { loggedInUser: host } = request;
 
@@ -22,7 +26,9 @@ export default class UserChatsController {
     }
   }
 
-  public async verifyInvite({ params, request }: HttpContextContract) {
+  public async verifyInvite({ params, request }: HttpContextContract): Promise<{
+    room_id: string;
+  }> {
     const { invc: invite_code } = params;
     const { loggedInUser } = request;
     const invitation = await invitationService.findInvitationById(invite_code);
@@ -72,6 +78,14 @@ export default class UserChatsController {
     }
     return {
       data: new InvitationTransformer().transformList(rooms),
+    };
+  }
+
+  public async getMessages({ request }: HttpContextContract) {
+    const { room_id } = await request.validate(MessageValidator);
+    const messages: Message[] = await messageService.findMessagesByColumn("room_id", room_id);
+    return {
+      data: new MessageTransformer().transformList(messages),
     };
   }
 }

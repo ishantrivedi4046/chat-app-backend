@@ -7,4 +7,5 @@ Route.group(() => {
   }).prefix("/invite");
 
   Route.get("rooms/list", "UserChatsController.getUserRooms");
+  Route.post("/messages", "UserChatsController.getMessages");
 }).middleware("auth");
