@@ -51,37 +51,25 @@ export default class AuthController {
 
   public async signup({ request }: HttpContextContract) {
     const sanitizedPayload = await request.validate(SignupValidator);
-    const { email, phone } = sanitizedPayload;
-    if (!email && !phone) {
-      throw new BadrequestException(
-        "Both email and phone number are missing from user details. Please add atleast one to signup!"
-      );
-    }
+    const { email } = sanitizedPayload;
 
-    if (email) {
-      const user = await userService.findByUserColumn("email", email);
-      if (user) {
-        throw new BadrequestException("User with same email already exists!");
-      }
-    } else if (phone) {
-      const user = await userService.findByUserColumn("phone", phone);
-      if (user) {
-        throw new BadrequestException("User with same phone number already exists!");
-      }
+    const user = await userService.findByUserColumn("email", email);
+    if (user) {
+      throw new BadrequestException("User with same email already exists!");
     }
 
     const createdUser = await userService.creatUser(sanitizedPayload);
     if (createdUser) {
-      if (email) {
-        await notificationService.sendWelcomeEmail(createdUser);
-      }
+      await notificationService.sendWelcomeEmail(createdUser);
       return {
         data: new UserTransformer().transform(createdUser),
       };
     }
 
     return {
-      data: {},
+      data: {
+        success: true,
+      },
     };
   }
 

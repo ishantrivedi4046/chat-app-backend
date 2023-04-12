@@ -30,6 +30,22 @@ class NotificationService {
 
     await mailService.sendMail(messageBody);
   }
+
+  public async sendInvitation(link: string, hostName: string, message: MailDataRequired) {
+    const html = View.renderSync("invitation.edge", {
+      host: hostName,
+      invitationLink: link,
+    });
+
+    const messageBody = {
+      ...message,
+      html,
+    } as MailDataRequired;
+
+    loggerService.info(`Sending Email with message body as ${JSON.stringify(messageBody)}`);
+
+    await mailService.sendMail(messageBody);
+  }
 }
 
 export const notificationService = NotificationService.getInstance();

@@ -13,10 +13,10 @@ export default class User extends BaseModel {
   public last_name?: string;
 
   @column()
-  public email?: string;
+  public email: string;
 
   @column({ serializeAs: null })
-  public password?: string;
+  public password: string;
 
   @column()
   public phone?: string;

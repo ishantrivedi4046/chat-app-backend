@@ -10,6 +10,10 @@ class UserService {
     return await User.create(userData);
   }
 
+  public async getAllUsers() {
+    return await User.all();
+  }
+
   public async findById(value: number): Promise<User | null> {
     return await User.query().where("id", value).first();
   }
