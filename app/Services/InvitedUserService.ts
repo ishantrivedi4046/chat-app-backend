@@ -7,7 +7,11 @@ class InvitedUserService {
   }
 
   public async createInvitedUser(invitedUserPayload: InvitedUserCreateDTO): Promise<InvitedUser> {
-    return await InvitedUser.create(invitedUserPayload);
+    return await InvitedUser.firstOrCreate(invitedUserPayload);
+  }
+
+  public async findInvitedUserByColumn(column: string, value: string) {
+    return await InvitedUser.query().where(column, value).first();
   }
 }
 

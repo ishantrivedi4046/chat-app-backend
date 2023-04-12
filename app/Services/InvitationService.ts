@@ -19,6 +19,13 @@ class InvitationService {
     return await Invitation.find(id);
   }
 
+  public async findInvitationsByColumn(
+    column: string,
+    value: string | boolean | number
+  ): Promise<Invitation[]> {
+    return await Invitation.query().where(column, value);
+  }
+
   public generateInvitaionLink(invitation_code: string) {
     return `${Env.get("BASE_URL")}?invite_code=${invitation_code}`;
   }
