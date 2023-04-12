@@ -15,6 +15,10 @@ class InvitationService {
     return await Invitation.create(invitationPayload);
   }
 
+  public async findInvitationById(id: string): Promise<Invitation | null> {
+    return await Invitation.find(id);
+  }
+
   public generateInvitaionLink(invitation_code: string) {
     return `${Env.get("BASE_URL")}?invite_code=${invitation_code}`;
   }
@@ -27,6 +31,7 @@ class InvitationService {
       /** entering invited users in the table */
       const invitedUser = await invitedUserService.createInvitedUser({ email });
       if (invitedUser) {
+        await newInvitation.related("invitedUsers").save(invitedUser);
         const message: MailDataRequired = {
           to: {
             email,
@@ -36,6 +41,13 @@ class InvitationService {
         await notificationService.sendInvitation(invitationLink, host.user_name, message);
       }
     });
+  }
+
+  public async updateInvitationColumns(
+    invitation: Invitation,
+    updatePayload: Record<string, string>
+  ): Promise<Invitation> {
+    return await invitation.merge(updatePayload).save();
   }
 }
 
