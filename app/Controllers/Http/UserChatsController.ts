@@ -1,14 +1,14 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import BadrequestException from "App/Exceptions/BadrequestException";
 import InternalServerException from "App/Exceptions/InternalServerException";
-import Invitation from "App/Models/Invitation";
 import Message from "App/Models/Message";
 import { invitationService } from "App/Services/InvitationService";
-import { invitedUserService } from "App/Services/InvitedUserService";
 import { loggerService } from "App/Services/LoggerService";
 import { messageService } from "App/Services/MessageService";
+import { userService } from "App/Services/UserService";
 import { InvitationTransformer } from "App/Transformers/Invitation/InvitationTransformer";
 import { MessageTransformer } from "App/Transformers/Message/MessageTransformer";
+import { UserTransformer } from "App/Transformers/User/UserTransformer";
 import { Helpers } from "App/Utils/helpers.util";
 import InviteValidator from "App/Validators/InviteValidator";
 import MessageValidator from "App/Validators/MessageValidator";
@@ -60,24 +60,19 @@ export default class UserChatsController {
 
   public async getUserRooms({ request }: HttpContextContract) {
     const { loggedInUser } = request;
-    const userAsInvited = await invitedUserService.findInvitedUserByColumn(
-      "email",
-      loggedInUser.email
-    );
-    let rooms: Invitation[] = [];
-    if (userAsInvited) {
-      await userAsInvited.load("invitations");
-      rooms = userAsInvited.invitations;
-    }
-    const invitationsHosted: Invitation[] = await invitationService.findInvitationsByColumn(
-      "host_id",
-      loggedInUser.id
-    );
-    if (invitationsHosted.length) {
-      rooms = [...rooms, ...invitationsHosted].filter((inv) => !!inv.room_id);
-    }
+    const rooms = await userService.getUserGroups(loggedInUser);
+    const transformedRooms = new InvitationTransformer().transformList(rooms).map(async (room) => {
+      const hostId = room.host_id;
+      const host = await userService.findById(hostId);
+      return {
+        host: new UserTransformer().transform(host!),
+        room_id: room.room_id,
+        id: room.id,
+      };
+    });
+
     return {
-      data: new InvitationTransformer().transformList(rooms),
+      data: transformedRooms,
     };
   }
 

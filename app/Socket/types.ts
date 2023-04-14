@@ -17,9 +17,10 @@ export interface SocketErrorType {
   error_code: SocketResponseCodes;
 }
 
-export interface SocketMessageDataType {
+export interface SocketCommandHelperBasePayload {
+  userId: number;
+}
+export interface SocketMessageDataType extends SocketCommandHelperBasePayload {
   message: string;
-  sender_id: number;
-  receiver_id: number;
-  room_id?: string;
+  room_id: string;
 }
