@@ -61,15 +61,19 @@ export default class UserChatsController {
   public async getUserRooms({ request }: HttpContextContract) {
     const { loggedInUser } = request;
     const rooms = await userService.getUserGroups(loggedInUser);
-    const transformedRooms = new InvitationTransformer().transformList(rooms).map(async (room) => {
-      const hostId = room.host_id;
-      const host = await userService.findById(hostId);
-      return {
-        host: new UserTransformer().transform(host!),
-        room_id: room.room_id,
-        id: room.id,
-      };
-    });
+    const transformedRoomsPromises = new InvitationTransformer()
+      .transformList(rooms)
+      .map(async (room) => {
+        const hostId = room.host_id;
+        const host = await userService.findById(hostId);
+        return {
+          host: new UserTransformer().transform(host!),
+          room_id: room.room_id,
+          id: room.id,
+        };
+      });
+
+    const transformedRooms = await Promise.all(transformedRoomsPromises);
 
     return {
       data: transformedRooms,

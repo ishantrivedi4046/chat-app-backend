@@ -1,11 +1,15 @@
 import { DateTime } from "luxon";
-import { BaseModel, column, ManyToMany, manyToMany } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, beforeCreate, column, ManyToMany, manyToMany } from "@ioc:Adonis/Lucid/Orm";
 import Invitation from "./Invitation";
+import { uuid } from "uuidv4";
 
 export default class InvitedUser extends BaseModel {
+  public static selfAssignPrimaryKey = true;
+
   @column({ isPrimary: true })
   public id: string;
 
+  @column()
   public email: string;
 
   @column.dateTime({ autoCreate: true })
@@ -21,4 +25,9 @@ export default class InvitedUser extends BaseModel {
     pivotTable: "invitations_users",
   })
   public invitations: ManyToMany<typeof Invitation>;
+
+  @beforeCreate()
+  public static assignUUID(invitedUser: InvitedUser) {
+    invitedUser.id = uuid();
+  }
 }

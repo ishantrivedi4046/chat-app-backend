@@ -1,7 +1,10 @@
 import { DateTime } from "luxon";
-import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, beforeCreate, column } from "@ioc:Adonis/Lucid/Orm";
+import { uuid } from "uuidv4";
 
 export default class Message extends BaseModel {
+  public static selfAssignPrimaryKey = true;
+
   @column({ isPrimary: true })
   public id: string;
 
@@ -19,4 +22,9 @@ export default class Message extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
+
+  @beforeCreate()
+  public static assignUUID(message: Message) {
+    message.id = uuid();
+  }
 }
