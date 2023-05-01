@@ -33,3 +33,4 @@ Route.get("/health", async ({ response }) => {
 
 import "./auth";
 import "./user";
+import "./chat";
